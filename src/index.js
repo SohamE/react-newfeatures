@@ -4,65 +4,75 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-// const Apple = (props) => {
-//   let [count, setCount] = useState(props.counter);
-//   let [text, setText] = useState("");
+const Apple = () => {
+  let [title, setTitle] = useState("");
+  let [desc, setDesc] = useState("");
+  let [notes, setNotes] = useState([]);
+  let [titleErr, setTitleErr] = useState("");
 
-//   const increment = () => {
-//     setCount(count+1);
-//   };
+  const addNote = (e) => {
+    e.preventDefault();
 
-//   return (
-//     <div>
-//       <input onChange={(e) => {setText(e.target.value)}}/>
-//       <p>The current {text || "count"} is {count}</p>
-//       <button onClick={increment}>+1</button>
-//       <button onClick={() => {setCount(props.counter)}}>reset</button>
-//       <button onClick={() => {setCount(count - 1)}}>-1</button>
-//     </div>
-//   );
-// };
-const Apple = (props) => {
-  let [state, setState] = useState({
-    count: props.counter,
-    text: "",
-  });
+    setNotes([
+      ...notes,
+      {
+        title,
+        desc,
+      },
+    ]);
 
-  const increment = () => {
-    setState({ ...state, count: state.count + 1 });
+    setTitle("");
+    setDesc("");
+  };
+
+  const removeNote = (noteTest) => {
+    setNotes(notes.filter((note) => note !== noteTest));
+  };
+
+  const validateTitle = (titleTest) => {
+    let error = "";
+    if (titleTest == "") {
+      error = "Title is Empty";
+    }
+    setTitleErr(error);
+    return !!error;
   };
 
   return (
     <div>
-      <input
-        onChange={(e) => {
-          setState({ ...state, text: e.target.value });
-        }}
-      />
-      <p>
-        The current {state.text || "count"} is {state.count}
-      </p>
-      <button onClick={increment}>+1</button>
-      <button
-        onClick={() => {
-          setState({ ...state, count: props.counter});
-        }}
-      >
-        reset
-      </button>
-      <button
-        onClick={() => {
-          setState({ ...state, count: state.count - 1});
-        }}
-      >
-        -1
-      </button>
+      <h1>My Notes</h1>
+      {notes.map((note, index) => (
+        <div key={index}>
+          <h4>{note.title}</h4>
+          <p>{note.desc}</p>
+          <button
+            onClick={() => {
+              removeNote(note);
+            }}
+          >
+            X
+          </button>
+        </div>
+      ))}
+      <form onSubmit={addNote}>
+        <input
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            validateTitle(e.target.value);
+          }}
+        />
+        {titleErr && <p>Error: {titleErr}</p>}
+        <textarea
+          value={desc}
+          onChange={(e) => {
+            setDesc(e.target.value);
+          }}
+        />
+        <input type="submit" value="Submit" />
+      </form>
     </div>
   );
-};
-
-Apple.defaultProps = {
-  counter: 0,
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
