@@ -1,13 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const Apple = (props) => {
+  let [count, setCount] = useState(props.counter);
+  let [text, setText] = useState("");
+
+  const increment = () => {
+    setCount(count+1);
+  };
+
+  return (
+    <div>
+      <input onChange={(e) => {setText(e.target.value)}}/>
+      <p>The current {text || "count"} is {count}</p>
+      <button onClick={increment}>+1</button>
+      <button onClick={() => {setCount(props.counter)}}>reset</button>
+      <button onClick={() => {setCount(count - 1)}}>-1</button>
+    </div>
+  );
+};
+
+Apple.defaultProps = {
+  counter: 0
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <Apple counter={30}/>
   </React.StrictMode>
 );
 
