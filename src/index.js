@@ -1,45 +1,59 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+const notesReducer = (state, action) => {
+  switch (action.type) {
+    case "POPULATE_NOTES":
+      return action.notes;
+    case "REMOVE_NOTE":
+      return state.filter((note) => note !== action.noteTest);
+    case "ADD_NOTE":
+      return [
+        ...state,
+        {
+          title: action.title,
+          desc: action.desc,
+        },
+      ];
+    default:
+      return state;
+  }
+};
+
 const Apple = () => {
   let [title, setTitle] = useState("");
   let [desc, setDesc] = useState("");
-  let [notes, setNotes] = useState([]);
+  const [notes, notesDispatch] = useReducer(notesReducer, []);
   let [titleErr, setTitleErr] = useState("");
 
   const addNote = (e) => {
     e.preventDefault();
 
-    setNotes([
-      ...notes,
-      {
-        title,
-        desc,
-      },
-    ]);
+    notesDispatch({ type: "ADD_NOTE", title, desc }); 
 
     setTitle("");
     setDesc("");
   };
 
   const removeNote = (noteTest) => {
-    setNotes(notes.filter((note) => note !== noteTest));
+    notesDispatch({ type: "REMOVE_NOTE", noteTest });
   };
 
   useEffect(() => {
-    const notesData = JSON.parse(localStorage.getItem('notes'));
+    const notes = JSON.parse(localStorage.getItem("notes"));
 
-    if (notesData) {
-      setNotes(notesData)
+    if (notes.length > 0) {
+      notesDispatch({ type: "POPULATE_NOTES", notes });
     }
-  }, [] )
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes, title]);
+    console.log("setting");
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   const validateTitle = (titleTest) => {
     let error = "";
