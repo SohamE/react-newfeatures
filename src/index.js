@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -28,6 +28,18 @@ const Apple = () => {
   const removeNote = (noteTest) => {
     setNotes(notes.filter((note) => note !== noteTest));
   };
+
+  useEffect(() => {
+    const notesData = JSON.parse(localStorage.getItem('notes'));
+
+    if (notesData) {
+      setNotes(notesData)
+    }
+  }, [] )
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes, title]);
 
   const validateTitle = (titleTest) => {
     let error = "";
