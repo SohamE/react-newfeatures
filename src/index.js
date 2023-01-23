@@ -2,26 +2,8 @@ import React, { useState, useEffect, useReducer } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import notesReducer from "./reducers/notes";
 import reportWebVitals from "./reportWebVitals";
-
-const notesReducer = (state, action) => {
-  switch (action.type) {
-    case "POPULATE_NOTES":
-      return action.notes;
-    case "REMOVE_NOTE":
-      return state.filter((note) => note !== action.noteTest);
-    case "ADD_NOTE":
-      return [
-        ...state,
-        {
-          title: action.title,
-          desc: action.desc,
-        },
-      ];
-    default:
-      return state;
-  }
-};
 
 const Apple = () => {
   let [title, setTitle] = useState("");
@@ -32,7 +14,7 @@ const Apple = () => {
   const addNote = (e) => {
     e.preventDefault();
 
-    notesDispatch({ type: "ADD_NOTE", title, desc }); 
+    notesDispatch({ type: "ADD_NOTE", title, desc });
 
     setTitle("");
     setDesc("");
@@ -68,17 +50,7 @@ const Apple = () => {
     <div>
       <h1>My Notes</h1>
       {notes.map((note, index) => (
-        <div key={index}>
-          <h4>{note.title}</h4>
-          <p>{note.desc}</p>
-          <button
-            onClick={() => {
-              removeNote(note);
-            }}
-          >
-            X
-          </button>
-        </div>
+        <Note key={index} note={note} removeNote={removeNote} />
       ))}
       <form onSubmit={addNote}>
         <input
@@ -97,6 +69,30 @@ const Apple = () => {
         />
         <input type="submit" value="Submit" />
       </form>
+    </div>
+  );
+};
+
+let Note = ({ note, removeNote }) => {
+  useEffect(() => {
+    console.log("Setting up effect!");
+
+    return () => {
+      console.log("Cleaning up effect");
+    };
+  }, []);
+
+  return (
+    <div>
+      <h4>{note.title}</h4>
+      <p>{note.desc}</p>
+      <button
+        onClick={() => {
+          removeNote(note);
+        }}
+      >
+        X
+      </button>
     </div>
   );
 };
